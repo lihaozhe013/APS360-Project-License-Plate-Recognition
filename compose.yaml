@@ -1,0 +1,33 @@
+services:
+  jupyter-lab:
+    # Using the scipy-notebook for standard data science stack (Pandas, NumPy, etc.)
+    # Change to 'jupyter/base-notebook' if you want a minimal footprint.
+    image: jupyter/scipy-notebook:latest
+    
+    # map container name for easy identification
+    container_name: local-jupyter-engine
+    
+    # Determine the restart policy
+    restart: "no"
+
+    ports:
+      # Host_Port:Container_Port
+      # Access via http://localhost:9999
+      - "9999:8888"
+
+    volumes:
+      # Mount current directory (.) to the working directory inside container
+      # This allows persistence of your .ipynb files on Windows
+      - .:/home/jovyan/work
+
+    environment:
+      # Force JupyterLab interface
+      - JUPYTER_ENABLE_LAB=yes
+      # Grant permission to fix ownership issues on volume mount if necessary
+      - CHOWN_HOME=yes
+      - CHOWN_HOME_OPTS='-R'
+
+    # Custom command to start Jupyter with specific flags:
+    # --NotebookApp.token: Hardcodes the token (no need to copy-paste from logs)
+    # --allow-root: Permissive run (optional, but useful in some docker contexts)
+    command: start-notebook.sh --NotebookApp.token='mysecret' --NotebookApp.password=''

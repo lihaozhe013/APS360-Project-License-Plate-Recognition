@@ -1,0 +1,36 @@
+# --- Jupyter & Python Metadata ---
+# Ignore checkpoint folders created by Jupyter
+.ipynb_checkpoints/
+
+# Ignore compiled python files (if you use src/ modules)
+__pycache__/
+*.pyc
+
+# --- Data & Outputs (CRITICAL) ---
+# Ignore the entire data directory content
+data/
+# Ignore the entire outputs directory content
+outputs/
+
+# Alternatively, ignore specific large file extensions wherever they are
+*.csv
+*.xlsx
+*.zip
+*.tar.gz
+*.pkl
+*.h5
+*.mp4
+
+# --- System Artifacts (Windows/Mac) ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Environment & Logs ---
+.env
+*.log
+docker-compose.override.yml
+
+# --- IDE Settings (Optional but recommended) ---
+.vscode/
+.idea/

@@ -1,8 +1,8 @@
 default: run
 
 clean:
-	rm -rf ./generated/*.html
-	rm -rf ./generated/*.jpg
+	rm -rf ./out/*.html
+	rm -rf ./out/*.jpg
 
 run:
 	python generate.py

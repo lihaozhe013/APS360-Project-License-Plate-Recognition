@@ -7,7 +7,7 @@ from jinja2 import Template
 from playwright.sync_api import sync_playwright
 
 base_dir = Path(__file__).parent.resolve()
-num_of_plates = 10
+num_of_plates = 10000
 out_path = base_dir / "out"
 
 template_html_path = base_dir / "src" / "template.html"

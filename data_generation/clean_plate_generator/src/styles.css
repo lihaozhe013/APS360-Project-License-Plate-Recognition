@@ -1,0 +1,71 @@
+@font-face {
+  font-family: 'Driver Gothic';
+  src:
+    url('fonts/DriverGothic.woff2') format('woff2'),
+    url('fonts/DriverGothic.woff') format('woff'),
+    url('fonts/DriverGothic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.plate-container {
+  width: 600px;
+  height: 300px;
+  background-color: #ffffff;
+  border: 8px solid rgb(255, 255, 255);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  box-sizing: border-box;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.plate-header {
+  letter-spacing: 5px;
+  transform: translateY(-1px);
+}
+
+.plate-number {
+  color: rgb(54, 122, 189);
+  font-size: 135px;
+  font-weight: 900;
+  font-family: 'Driver Gothic', sans-serif;
+  letter-spacing: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  transform: translateY(-35px) scaleY(1);
+}
+
+.plate-footer {
+  margin-bottom: 10px;
+  transform: translateY(-45px);
+}
+
+.img-Ontario {
+  width: 230px;
+}
+
+.img-crown {
+  width: 40px;
+  transform: translateY(2px) translateX(-3px);
+}
+
+.img-discover {
+  width: 250px;
+}

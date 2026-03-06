@@ -9,12 +9,13 @@ clean_plate_generator_dir = base_dir / 'clean_plate_generator'
 domain_randomizer_dir = base_dir / 'domain_randomizer'
 
 clean_plate_out = base_dir / 'clean_plate_generator' / 'out'
-aged_plates_dir = base_dir / 'domain_randomizer' / 'aged_plates'
 domain_random_input_dir = base_dir / 'domain_randomizer' / 'clean_plates'
+domain_random_output_dir = base_dir / 'domain_randomizer' / 'aged_plates'
+train_data_dir = base_dir / '..' / 'train' / 'data'
 
 clean_list = [
     clean_plate_out, 
-    aged_plates_dir, 
+    domain_random_output_dir, 
     domain_random_input_dir
 ]
 
@@ -32,8 +33,9 @@ def main():
         builder.smart_delete(clean_plate_out / 'fonts')
 
         # domain_randomize
-        builder.copy_and_rename(base_dir, clean_plate_out, domain_random_input_dir)
+        builder.copy_and_rename(clean_plate_out, domain_random_input_dir)
         builder.run_command(domain_randomizer_dir, "python process_plates.py")
+        builder.copy_and_rename(domain_random_output_dir, train_data_dir)
 
         print("\nBuild Script Finished Successfully!")
 

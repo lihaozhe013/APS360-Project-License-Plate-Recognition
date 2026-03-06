@@ -2,8 +2,7 @@ import os
 import shutil
 import random
 import string
-import os
-import shutil
+from pathlib import Path
 
 def _safe_copy_single_file(src, dst, *, follow_symlinks=True):
     """
@@ -38,7 +37,7 @@ def safe_copy(src_path, dst_path):
     # If the destination is an existing directory, we place the source INSIDE it.
     # Otherwise, we assume dst_path is the exact intended path.
     if os.path.exists(dst_path) and os.path.isdir(dst_path):
-        actual_dst = os.path.join(dst_path, src_name)
+        actual_dst = Path(dst_path) / src_name
     else:
         actual_dst = dst_path
 
@@ -69,10 +68,10 @@ def generate_plate(letter_num, number_num):
     return letters, numbers
 
 def init_out(base_dir, out_path):
-    os.makedirs(out_path, exist_ok=True)
-    css_path = os.path.join(base_dir, "src", "styles.css")
-    font_path = os.path.join(base_dir, "src", "fonts")
-    assets_path = os.path.join(base_dir, "src", "assets")
+    Path(out_path).mkdir(parents=True, exist_ok=True)
+    css_path = base_dir / "src" / "styles.css"
+    font_path = base_dir / "src" / "fonts"
+    assets_path = base_dir / "src" / "assets"
     safe_copy(css_path, out_path)
     safe_copy(font_path, out_path)
     safe_copy(assets_path, out_path)

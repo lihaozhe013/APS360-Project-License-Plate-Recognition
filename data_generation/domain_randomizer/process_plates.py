@@ -3,13 +3,13 @@ import cv2
 import albumentations as A
 from pathlib import Path
 
-script_path = os.path.abspath(__file__)
-root_dir = os.path.dirname(script_path)
+script_path = Path(__file__).resolve()
+root_dir = script_path.parent
 
-INPUT_DIR = os.path.join(root_dir, 'clean_plates')
-OUTPUT_DIR = os.path.join(root_dir, 'aged_plates')
+INPUT_DIR = root_dir / 'clean_plates'
+OUTPUT_DIR = root_dir / 'aged_plates'
 
-Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ==========================================
 # Define Domain Randomization Pipeline (Local Aging)

@@ -8,9 +8,9 @@ from playwright.sync_api import sync_playwright
 
 base_dir = Path(__file__).parent.resolve()
 num_of_plates = 10
-out_path = os.path.join(base_dir, "out")
+out_path = base_dir / "out"
 
-template_html_path = os.path.join(base_dir, "src", "template.html")
+template_html_path = base_dir / "src" / "template.html"
 
 
 def generate_images():
@@ -35,15 +35,15 @@ def generate_images():
 
             rendered_content = template.render(L=L, D=D, status="Awesome")
             output_html_filename = f"{full_plate}.html"
-            output_html_path = os.path.join(out_path, output_html_filename)
+            output_html_path = out_path / output_html_filename
 
             with open(output_html_path, "w") as file:
                 file.write(rendered_content)
 
-            output_jpg_path = os.path.join(out_path, f"{full_plate}.jpg")
+            output_jpg_path = out_path / f"{full_plate}.jpg"
 
             # process paths for playwright (absolute path is safer)
-            absolute_html_path = os.path.abspath(output_html_path)
+            absolute_html_path = output_html_path.resolve()
             page.goto(f"file://{absolute_html_path}")
 
             # Take screenshot of the plate element

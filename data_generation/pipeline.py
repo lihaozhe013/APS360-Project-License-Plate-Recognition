@@ -1,7 +1,7 @@
-import os
 import sys
 from pathlib import Path
-from utils.project_builder import ProjectBuilder
+from utils.split_and_copy import split_and_move
+from utils.directory_manager import DirectoryManager
 
 base_dir = Path(__file__).parent.resolve()
 
@@ -12,30 +12,37 @@ clean_plate_out = base_dir / 'clean_plate_generator' / 'out'
 domain_random_input_dir = base_dir / 'domain_randomizer' / 'clean_plates'
 domain_random_output_dir = base_dir / 'domain_randomizer' / 'aged_plates'
 train_data_dir = base_dir / '..' / 'train' / 'data'
+train_set_dir = train_data_dir / 'train'
+val_set_dir = train_data_dir / 'val'
 
 clean_list = [
     clean_plate_out, 
     domain_random_output_dir, 
-    domain_random_input_dir
+    domain_random_input_dir,
+    train_data_dir
 ]
 
+
+
 def main():
-    builder = ProjectBuilder()
+    builder = DirectoryManager()
 
     try:
         # clean
-        builder.clean_dirs(base_dir, clean_list)
+        builder.clean(base_dir, clean_list)
 
         # generate clean plates
-        builder.run_command(clean_plate_generator_dir, "python generate.py")
+        builder.run(clean_plate_generator_dir, "python generate.py")
         builder.retain_only_extensions(clean_plate_out, '.jpg')
-        builder.smart_delete(clean_plate_out / 'assets')
-        builder.smart_delete(clean_plate_out / 'fonts')
+        builder.delete(clean_plate_out / 'assets')
+        builder.delete(clean_plate_out / 'fonts')
 
         # domain_randomize
-        builder.copy_and_rename(clean_plate_out, domain_random_input_dir)
-        builder.run_command(domain_randomizer_dir, "python process_plates.py")
-        builder.copy_and_rename(domain_random_output_dir, train_data_dir)
+        builder.move(clean_plate_out, domain_random_input_dir)
+        builder.run(domain_randomizer_dir, "python process_plates.py")
+        
+        # Split and distribute to train/val folders
+        split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=100)
 
         print("\nBuild Script Finished Successfully!")
 

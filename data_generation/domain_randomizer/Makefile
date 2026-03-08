@@ -1,4 +1,4 @@
 default: run
 
 run:
-	python process_plates.py
+	uv run process_plates.py

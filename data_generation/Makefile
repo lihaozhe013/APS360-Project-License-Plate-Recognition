@@ -1,4 +1,4 @@
 default: run
 
 run:
-	python pipeline.py
+	uv run pipeline.py

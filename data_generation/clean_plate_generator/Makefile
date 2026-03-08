@@ -5,4 +5,4 @@ clean:
 	rm -rf ./out/*.jpg
 
 run:
-	python generate.py
+	uv run generate.py

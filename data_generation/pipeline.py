@@ -29,17 +29,17 @@ def main():
 
     try:
         # clean
-        builder.clean(base_dir, clean_list)
+        builder.clean(clean_list)
 
         # generate clean plates
-        builder.run(clean_plate_generator_dir, "python generate.py")
+        builder.run(clean_plate_generator_dir, "uv run generate.py")
         builder.retain_only_extensions(clean_plate_out, '.jpg')
         builder.delete(clean_plate_out / 'assets')
         builder.delete(clean_plate_out / 'fonts')
 
         # domain_randomize
         builder.move(clean_plate_out, domain_random_input_dir)
-        builder.run(domain_randomizer_dir, "python process_plates.py")
+        builder.run(domain_randomizer_dir, "uv run process_plates.py")
         
         # Split and distribute to train/val folders
         split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=100)

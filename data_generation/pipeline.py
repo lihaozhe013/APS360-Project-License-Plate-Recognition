@@ -2,6 +2,7 @@ from pathlib import Path
 from utils.split_and_copy import split_and_move
 from utils.directory_manager import DirectoryManager
 from utils.resize import resize_data
+import shutil
 
 base_dir = Path(__file__).parent.resolve()
 
@@ -40,7 +41,10 @@ def main():
     builder.run(domain_randomizer_dir, "uv run process_plates.py")
     
     # Split and distribute to train/val folders
-    split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=100)
+    split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=20)
+
+    # copy real val data into val folder
+    shutil.copytree(base_dir / 'real_val_data', val_set_dir, dirs_exist_ok=True)
 
     resize_data(train_data_dir)
 

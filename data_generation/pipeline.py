@@ -1,7 +1,7 @@
-import sys
 from pathlib import Path
 from utils.split_and_copy import split_and_move
 from utils.directory_manager import DirectoryManager
+from utils.resize import resize_data
 
 base_dir = Path(__file__).parent.resolve()
 
@@ -23,34 +23,28 @@ clean_list = [
 ]
 
 
-
 def main():
     builder = DirectoryManager()
 
-    try:
-        # clean
-        builder.clean(clean_list)
+    # clean
+    builder.clean(clean_list)
 
-        # generate clean plates
-        builder.run(clean_plate_generator_dir, "uv run generate.py")
-        builder.retain_only_extensions(clean_plate_out, '.jpg')
-        builder.delete(clean_plate_out / 'assets')
-        builder.delete(clean_plate_out / 'fonts')
+    # generate clean plates
+    builder.run(clean_plate_generator_dir, "uv run generate.py")
+    builder.retain_only_extensions(clean_plate_out, '.jpg')
+    builder.delete(clean_plate_out / 'assets')
+    builder.delete(clean_plate_out / 'fonts')
 
-        # domain_randomize
-        builder.move(clean_plate_out, domain_random_input_dir)
-        builder.run(domain_randomizer_dir, "uv run process_plates.py")
-        
-        # Split and distribute to train/val folders
-        split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=100)
+    # domain_randomize
+    builder.move(clean_plate_out, domain_random_input_dir)
+    builder.run(domain_randomizer_dir, "uv run process_plates.py")
+    
+    # Split and distribute to train/val folders
+    split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=100)
 
-        print("\nBuild Script Finished Successfully!")
+    resize_data(train_data_dir)
 
-    except Exception as error:
-        # Any failure in run_command or copy_and_rename lands here
-        print("\nCRITICAL ERROR: Script terminated.")
-        print(f"Details: {error}")
-        sys.exit(1)
+    print("\Script Finished Successfully!")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

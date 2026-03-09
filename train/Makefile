@@ -3,3 +3,6 @@ train:
 
 test:
 	cd src && uv run inference.py
+
+resize: 
+	cd scripts && uv run resize_data.py

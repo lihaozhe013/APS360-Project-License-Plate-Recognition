@@ -54,6 +54,7 @@ def generate_images():
 
         browser.close()
 
+
 if __name__ == "__main__":
     init_out(base_dir, out_path)
     generate_images()

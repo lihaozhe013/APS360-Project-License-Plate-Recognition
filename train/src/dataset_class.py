@@ -6,11 +6,12 @@ from torchvision import transforms
 from PIL import Image
 from crnn_class import CHAR2IDX
 
+
 class LicensePlateDataset(Dataset):
-    def __init__(self, img_dir, img_width=128, img_height=32):
+    def __init__(self, img_dir, img_width=300, img_height=150):
         self.img_paths = glob.glob(os.path.join(img_dir, "*.jpg"))
 
-        # Resize to fixed height of 32 and width of 128, convert to tensor, normalize
+        # Resize to fixed height of 150 and width of 300, convert to tensor, normalize
         self.transform = transforms.Compose(
             [
                 transforms.Resize((img_height, img_width)),
@@ -38,4 +39,3 @@ class LicensePlateDataset(Dataset):
         label = [CHAR2IDX[c] for c in label_str if c in CHAR2IDX]
 
         return image, torch.tensor(label, dtype=torch.long)
-

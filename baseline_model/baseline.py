@@ -4,6 +4,7 @@ import pytesseract
 import imutils
 import numpy as np
 
+
 def recognize_license_plate(image_path):
     # 1. Load the image
     print(f"DEBUG: Processing {image_path}")
@@ -12,15 +13,15 @@ def recognize_license_plate(image_path):
     if img is None:
         print("Error: Could not load image.")
         return None
-    
+
     # 2. Convert to grayscale and blur to reduce noise
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Using Gaussian Blur which might retain more detail for small images compared to strong Bilateral
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 
     # 3. Apply edge detection to identify structural boundaries
-    edged = cv2.Canny(blurred, 30, 200) 
-    
+    edged = cv2.Canny(blurred, 30, 200)
+
     # NEW: Dilate/Close the edges to close gaps in the contour
     # key: Use MORPH_CLOSE to connect broken ridges (plate borders)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
@@ -49,17 +50,19 @@ def recognize_license_plate(image_path):
         rect_area = w * h
         extent = area / float(rect_area)
 
-        print(f"DEBUG: Contour {i} - area: {area:.1f}, aspect: {aspect_ratio:.2f}, extent: {extent:.2f}")
+        print(
+            f"DEBUG: Contour {i} - area: {area:.1f}, aspect: {aspect_ratio:.2f}, extent: {extent:.2f}"
+        )
 
         # Check for license plate generic properties
         # Aspect ratio: 1.5 - 5.0 (Covers square to wide)
         # Extent: Rectangular shapes fill their bounding box (> 0.5 usually)
         # Relaxed checks
         if 1.2 <= aspect_ratio <= 5.0 and extent > 0.45:
-             location = contour
-             plate_rect = (x, y, w, h)
-             print(f"DEBUG: Contour {i} accepted as potential plate.")
-             break
+            location = contour
+            plate_rect = (x, y, w, h)
+            print(f"DEBUG: Contour {i} accepted as potential plate.")
+            break
 
     if location is None:
         print("Could not detect a license plate contour.")
@@ -78,18 +81,22 @@ def recognize_license_plate(image_path):
     y_pad = max(0, y - pad)
     w_pad = min(img_w - x_pad, w + 2 * pad)
     h_pad = min(img_h - y_pad, h + 2 * pad)
-    
-    cropped_plate = gray[y_pad:y_pad+h_pad, x_pad:x_pad+w_pad]
+
+    cropped_plate = gray[y_pad : y_pad + h_pad, x_pad : x_pad + w_pad]
 
     # Preprocess crop for better OCR
     # Resize crop if it's too small (Tesseract likes characters > 30px height)
     if cropped_plate.shape[0] < 50:
         scale = 50.0 / cropped_plate.shape[0]
-        cropped_plate = cv2.resize(cropped_plate, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+        cropped_plate = cv2.resize(
+            cropped_plate, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC
+        )
 
     # Thresholding to make text stand out (Adaptive or Otsu)
-    cropped_plate = cv2.threshold(cropped_plate, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    
+    cropped_plate = cv2.threshold(
+        cropped_plate, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    )[1]
+
     # Save debug crop
     debug_crop_path = f"debug_crop_{Path(image_path).name}"
     cv2.imwrite(debug_crop_path, cropped_plate)
@@ -98,9 +105,9 @@ def recognize_license_plate(image_path):
     # 7. Use Tesseract OCR to recognize characters
     # Try different PSM modes and Inversion
     configs = [
-        r'--oem 3 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-        r'--oem 3 --psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-        r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+        r"--oem 3 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        r"--oem 3 --psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        r"--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
     ]
 
     best_text = ""
@@ -116,6 +123,7 @@ def recognize_license_plate(image_path):
             # For now just max length.
 
     return best_text
+
 
 # Example usage:
 # result = recognize_license_plate("path_to_ontario_car_image.jpg")

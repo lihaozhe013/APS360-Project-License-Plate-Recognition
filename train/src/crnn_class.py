@@ -4,8 +4,9 @@ import torch.nn.functional as F
 CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 CHAR2IDX = {char: idx + 1 for idx, char in enumerate(CHARS)}
 IDX2CHAR = {idx + 1: char for idx, char in enumerate(CHARS)}
-IDX2CHAR[0] = '-' 
+IDX2CHAR[0] = "-"
 NUM_CLASSES = len(CHARS) + 1  # +1 for CTC blank token
+
 
 class CRNN(nn.Module):
     def __init__(self, img_channel=1, num_classes=NUM_CLASSES, hidden_size=256):
@@ -70,4 +71,3 @@ class CRNN(nn.Module):
         # Apply log softmax as required by CTCLoss
         output = F.log_softmax(output, dim=2)
         return output
-

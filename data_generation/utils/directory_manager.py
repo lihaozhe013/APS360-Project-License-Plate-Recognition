@@ -3,10 +3,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 class DirectoryManager:
     def clean(self, directories):
         """
-        Clean specific directories. 
+        Clean specific directories.
         If they don't exist, simply skip them without error.
 
         Args:
@@ -39,7 +40,7 @@ class DirectoryManager:
         """
         print(f"\n>>> Task: Running Command -> '{command}' in {work_dir}")
         cwd_path = work_dir
-        
+
         # subprocess.run will raise an exception if the return code is non-zero
         subprocess.run(command, shell=True, cwd=cwd_path, check=True)
 
@@ -49,7 +50,7 @@ class DirectoryManager:
 
         Args:
             src_path (Path): Source file or directory path.
-            dst_path (Path): Destination path. 
+            dst_path (Path): Destination path.
 
         Details:
             - Directory copy: Recursively copies the 'src_path' directory to 'dst_path'.
@@ -106,7 +107,9 @@ class DirectoryManager:
 
         # Fix: shutil.move nests if dst exists. To ensure "Rename/Move To" semantics, we clear dst first.
         if dst_path.exists():
-            print(f"Destination {dst_path} exists, removing it before move to avoid nesting.")
+            print(
+                f"Destination {dst_path} exists, removing it before move to avoid nesting."
+            )
             if dst_path.is_dir():
                 shutil.rmtree(dst_path)
             else:
@@ -121,7 +124,7 @@ class DirectoryManager:
 
         Args:
             src_path (Path): Source file or directory path.
-            dst_path (Path): Destination path. 
+            dst_path (Path): Destination path.
         """
         print(f"\n>>> Task: Safe Copying -> {src_path} to {dst_path}")
         if dst_path.exists():
@@ -147,7 +150,7 @@ class DirectoryManager:
         if dst_path.exists():
             print(f"ERROR: Destination {dst_path} already exists. Aborting build.")
             sys.exit(1)
-        
+
         dst_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(src_path, dst_path)
 

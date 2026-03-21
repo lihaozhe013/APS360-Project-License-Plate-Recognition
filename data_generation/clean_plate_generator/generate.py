@@ -1,17 +1,14 @@
-import os
 from pathlib import Path
-from src.utils import safe_copy
 from src.utils import generate_plate
 from src.utils import init_out
 from jinja2 import Template
 from playwright.sync_api import sync_playwright
 
 base_dir = Path(__file__).parent.resolve()
-num_of_plates = 10000
+num_of_plates = 10
 out_path = base_dir / "out"
 
 template_html_path = base_dir / "src" / "template.html"
-
 
 def generate_images():
     with open(template_html_path, "r") as file:

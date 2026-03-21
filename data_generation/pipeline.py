@@ -1,6 +1,6 @@
 from pathlib import Path
 from utils.split_and_copy import split_and_move
-from utils.directory_manager import DirectoryManager
+from dm.directory_manager import DirectoryManager
 from utils.resize import resize_data
 import shutil
 

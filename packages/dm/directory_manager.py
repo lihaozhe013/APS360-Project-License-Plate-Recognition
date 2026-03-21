@@ -3,11 +3,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 class DirectoryManager:
     def clean(self, directories):
         """
-        Clean specific directories.
+        Clean specific directories. 
         If they don't exist, simply skip them without error.
 
         Args:
@@ -17,7 +16,7 @@ class DirectoryManager:
             builder.clean(["/workspace/dist", "/workspace/build"])
             # Removes dist and build
         """
-        print("\n>>> Task: Cleaning Directories")
+        print("\n>>> Cleaning Directories")
         for target in directories:
             if target.exists() and target.is_dir():
                 # We use shutil.rmtree to remove the folder and all its contents
@@ -38,9 +37,9 @@ class DirectoryManager:
         Example:
             builder.run(Path("/project"), "npm install")
         """
-        print(f"\n>>> Task: Running Command -> '{command}' in {work_dir}")
+        print(f"\n>>> Running Command -> '{command}' in {work_dir}")
         cwd_path = work_dir
-
+        
         # subprocess.run will raise an exception if the return code is non-zero
         subprocess.run(command, shell=True, cwd=cwd_path, check=True)
 
@@ -50,7 +49,7 @@ class DirectoryManager:
 
         Args:
             src_path (Path): Source file or directory path.
-            dst_path (Path): Destination path.
+            dst_path (Path): Destination path. 
 
         Details:
             - Directory copy: Recursively copies the 'src_path' directory to 'dst_path'.
@@ -66,7 +65,7 @@ class DirectoryManager:
             builder.copy(Path("src/assets"), Path("dist/assets"))
         """
 
-        print(f"\n>>> Task: Copying/Renaming -> {src_path} to {dst_path}")
+        print(f"\n>>> Copying/Renaming -> {src_path} to {dst_path}")
 
         # Ensure the destination's parent directory exists (auto-create)
         dst_path.parent.mkdir(parents=True, exist_ok=True)
@@ -100,16 +99,14 @@ class DirectoryManager:
             # Move 'temp_build' folder to 'final_build' (renaming)
             builder.move(Path("temp_build"), Path("final_build"))
         """
-        print(f"\n>>> Task: Moving -> {src_path} to {dst_path}")
+        print(f"\n>>> Moving -> {src_path} to {dst_path}")
 
         # Ensure the destination's parent directory exists (auto-create)
         dst_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Fix: shutil.move nests if dst exists. To ensure "Rename/Move To" semantics, we clear dst first.
         if dst_path.exists():
-            print(
-                f"Destination {dst_path} exists, removing it before move to avoid nesting."
-            )
+            print(f"Destination {dst_path} exists, removing it before move to avoid nesting.")
             if dst_path.is_dir():
                 shutil.rmtree(dst_path)
             else:
@@ -124,9 +121,9 @@ class DirectoryManager:
 
         Args:
             src_path (Path): Source file or directory path.
-            dst_path (Path): Destination path.
+            dst_path (Path): Destination path. 
         """
-        print(f"\n>>> Task: Safe Copying -> {src_path} to {dst_path}")
+        print(f"\n>>> Safe Copying -> {src_path} to {dst_path}")
         if dst_path.exists():
             print(f"ERROR: Destination {dst_path} already exists. Aborting build.")
             sys.exit(1)
@@ -146,11 +143,11 @@ class DirectoryManager:
             src_path (Path): Source file or directory path.
             dst_path (Path): Destination path.
         """
-        print(f"\n>>> Task: Safe Moving -> {src_path} to {dst_path}")
+        print(f"\n>>> Safe Moving -> {src_path} to {dst_path}")
         if dst_path.exists():
             print(f"ERROR: Destination {dst_path} already exists. Aborting build.")
             sys.exit(1)
-
+        
         dst_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(src_path, dst_path)
 
@@ -163,7 +160,7 @@ class DirectoryManager:
             path (Path | str): The path to check.
         """
         target = Path(path)
-        print(f"\n>>> Task: Checking existence -> {target}")
+        print(f"\n>>> Checking existence -> {target}")
         if not target.exists():
             print(f"ERROR: Required file or directory not found: {target}")
             print("Please ensure all dependencies and configuration files are ready.")
@@ -184,7 +181,7 @@ class DirectoryManager:
             # Deletes all files in 'dist' that do not end with .js
         """
         target = Path(directory)
-        print(f"\n>>> Task: Retaining only {extension} files in {target}")
+        print(f"\n>>> Retaining only {extension} files in {target}")
 
         if not target.exists() or not target.is_dir():
             print(f"Skipped (not found or not a dir): {target}")
@@ -213,7 +210,7 @@ class DirectoryManager:
             builder.delete(Path("dist/temp.txt"))
         """
         target = Path(path)
-        print(f"\n>>> Task: Smart Deleting -> {target}")
+        print(f"\n>>> Smart Deleting -> {target}")
 
         if not target.exists():
             print(f"Skipped (not found): {target}")

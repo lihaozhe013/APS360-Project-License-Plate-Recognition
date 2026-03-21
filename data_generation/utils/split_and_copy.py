@@ -1,7 +1,6 @@
 import shutil
 import random
 
-
 def split_and_move(src_dir, train_dst, val_dst, val_count=20):
     print(f"\n>>> Task: Splitting Dataset -> {val_count} images to Val, rest to Train")
 

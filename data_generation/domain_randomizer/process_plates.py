@@ -1,4 +1,3 @@
-import os
 import cv2
 import albumentations as A
 from pathlib import Path

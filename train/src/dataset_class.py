@@ -9,7 +9,7 @@ from crnn_class import CHAR2IDX
 
 class LicensePlateDataset(Dataset):
     def __init__(self, img_dir, img_width=300, img_height=150):
-        self.img_paths = glob.glob(os.path.join(img_dir, "*.jpg"))
+        self.img_paths = glob.glob(os.path.join(img_dir, '*.jpg'))
 
         # Resize to fixed height of 150 and width of 300, convert to tensor, normalize
         self.transform = transforms.Compose(
@@ -26,10 +26,10 @@ class LicensePlateDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.img_paths[idx]
         # Load as grayscale
-        image = Image.open(img_path).convert("L")
+        image = Image.open(img_path).convert('L')
 
         # Extract label from filename (e.g., "ABC1234.jpg" -> "ABC1234")
-        label_str = os.path.basename(img_path).replace(".jpg", "")
+        label_str = os.path.basename(img_path).replace('.jpg', '')
 
         # Apply visual transforms
         image = self.transform(image)

@@ -35,7 +35,7 @@ def decode_predictions(predictions):
             decoded_str.append(IDX2CHAR[idx])
         prev_idx = idx
 
-    return "".join(decoded_str), max_indices.tolist()
+    return ''.join(decoded_str), max_indices.tolist()
 
 
 # ==========================================
@@ -45,13 +45,13 @@ def decode_predictions(predictions):
 
 def run_inference(model_path, img_dir, num_samples=5):
     device = torch.device(
-        "cuda"
+        'cuda'
         if torch.cuda.is_available()
-        else "mps"
+        else 'mps'
         if torch.backends.mps.is_available()
-        else "cpu"
+        else 'cpu'
     )
-    print(f"Running inference on device: {device}\n")
+    print(f'Running inference on device: {device}\n')
 
     # Load model
     model = CRNN().to(device)
@@ -70,22 +70,22 @@ def run_inference(model_path, img_dir, num_samples=5):
     )
 
     # Grab a few images from the directory
-    img_paths = glob.glob(os.path.join(img_dir, "*.jpg"))[:num_samples]
+    img_paths = glob.glob(os.path.join(img_dir, '*.jpg'))[:num_samples]
 
     if not img_paths:
-        print(f"No JPG images found in {img_dir}")
+        print(f'No JPG images found in {img_dir}')
         return
 
-    print(f"{'Actual':<15} | {'Predicted':<15} | {'Raw Sequence'}")
-    print("-" * 65)
+    print(f'{"Actual":<15} | {"Predicted":<15} | {"Raw Sequence"}')
+    print('-' * 65)
 
     with torch.no_grad():
         for img_path in img_paths:
             # Get actual label from filename
-            actual_label = os.path.basename(img_path).replace(".jpg", "")
+            actual_label = os.path.basename(img_path).replace('.jpg', '')
 
             # Load and transform image
-            image = Image.open(img_path).convert("L")
+            image = Image.open(img_path).convert('L')
             image_tensor = (
                 transform(image).unsqueeze(0).to(device)
             )  # Add batch dimension -> (1, 1, 32, 128)
@@ -97,19 +97,19 @@ def run_inference(model_path, img_dir, num_samples=5):
             predicted_label, raw_indices = decode_predictions(output)
 
             # Create a string representation of the raw sequence for visualization
-            raw_seq_str = "".join([IDX2CHAR[idx] for idx in raw_indices])
+            raw_seq_str = ''.join([IDX2CHAR[idx] for idx in raw_indices])
 
-            print(f"{actual_label:<15} | {predicted_label:<15} | {raw_seq_str[:30]}...")
+            print(f'{actual_label:<15} | {predicted_label:<15} | {raw_seq_str[:30]}...')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     base_dir = Path(__file__).parent.resolve()
 
     # Update these paths if your checkpoint or data folder is named differently
-    MODEL_CHECKPOINT = base_dir / "crnn_plate_epoch_50.pth"
-    DATA_DIR = base_dir / ".." / "data" / "val"
+    MODEL_CHECKPOINT = base_dir / 'crnn_plate_epoch_50.pth'
+    DATA_DIR = base_dir / '..' / 'data' / 'val'
 
     if not MODEL_CHECKPOINT.exists():
-        print(f"Checkpoint not found at: {MODEL_CHECKPOINT}")
+        print(f'Checkpoint not found at: {MODEL_CHECKPOINT}')
     else:
         run_inference(MODEL_CHECKPOINT, DATA_DIR, num_samples=10)

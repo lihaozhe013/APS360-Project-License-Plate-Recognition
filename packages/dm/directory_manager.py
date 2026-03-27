@@ -3,10 +3,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+
 class DirectoryManager:
     def clean(self, directories):
         """
-        Clean specific directories. 
+        Clean specific directories.
         If they don't exist, simply skip them without error.
 
         Args:
@@ -16,14 +17,14 @@ class DirectoryManager:
             builder.clean(["/workspace/dist", "/workspace/build"])
             # Removes dist and build
         """
-        print("\n>>> Cleaning Directories")
+        print('\n>>> Cleaning Directories')
         for target in directories:
             if target.exists() and target.is_dir():
                 # We use shutil.rmtree to remove the folder and all its contents
                 shutil.rmtree(target)
-                print(f"Removed: {target}")
+                print(f'Removed: {target}')
             else:
-                print(f"Skipped (not found): {target}")
+                print(f'Skipped (not found): {target}')
 
     def run(self, work_dir, command):
         """
@@ -39,7 +40,7 @@ class DirectoryManager:
         """
         print(f"\n>>> Running Command -> '{command}' in {work_dir}")
         cwd_path = work_dir
-        
+
         # subprocess.run will raise an exception if the return code is non-zero
         subprocess.run(command, shell=True, cwd=cwd_path, check=True)
 
@@ -49,7 +50,7 @@ class DirectoryManager:
 
         Args:
             src_path (Path): Source file or directory path.
-            dst_path (Path): Destination path. 
+            dst_path (Path): Destination path.
 
         Details:
             - Directory copy: Recursively copies the 'src_path' directory to 'dst_path'.
@@ -65,7 +66,7 @@ class DirectoryManager:
             builder.copy(Path("src/assets"), Path("dist/assets"))
         """
 
-        print(f"\n>>> Copying/Renaming -> {src_path} to {dst_path}")
+        print(f'\n>>> Copying/Renaming -> {src_path} to {dst_path}')
 
         # Ensure the destination's parent directory exists (auto-create)
         dst_path.parent.mkdir(parents=True, exist_ok=True)
@@ -73,7 +74,7 @@ class DirectoryManager:
         if src_path.is_dir():
             # If destination exists, remove it first to ensure clean copy (resembling 'cp -r' behavior without nesting issues)
             if dst_path.exists():
-                print(f"Destination {dst_path} exists, removing it before copy.")
+                print(f'Destination {dst_path} exists, removing it before copy.')
                 shutil.rmtree(dst_path)
             shutil.copytree(src_path, dst_path)
         else:
@@ -99,14 +100,16 @@ class DirectoryManager:
             # Move 'temp_build' folder to 'final_build' (renaming)
             builder.move(Path("temp_build"), Path("final_build"))
         """
-        print(f"\n>>> Moving -> {src_path} to {dst_path}")
+        print(f'\n>>> Moving -> {src_path} to {dst_path}')
 
         # Ensure the destination's parent directory exists (auto-create)
         dst_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Fix: shutil.move nests if dst exists. To ensure "Rename/Move To" semantics, we clear dst first.
         if dst_path.exists():
-            print(f"Destination {dst_path} exists, removing it before move to avoid nesting.")
+            print(
+                f'Destination {dst_path} exists, removing it before move to avoid nesting.'
+            )
             if dst_path.is_dir():
                 shutil.rmtree(dst_path)
             else:
@@ -121,11 +124,11 @@ class DirectoryManager:
 
         Args:
             src_path (Path): Source file or directory path.
-            dst_path (Path): Destination path. 
+            dst_path (Path): Destination path.
         """
-        print(f"\n>>> Safe Copying -> {src_path} to {dst_path}")
+        print(f'\n>>> Safe Copying -> {src_path} to {dst_path}')
         if dst_path.exists():
-            print(f"ERROR: Destination {dst_path} already exists. Aborting build.")
+            print(f'ERROR: Destination {dst_path} already exists. Aborting build.')
             sys.exit(1)
 
         dst_path.parent.mkdir(parents=True, exist_ok=True)
@@ -143,11 +146,11 @@ class DirectoryManager:
             src_path (Path): Source file or directory path.
             dst_path (Path): Destination path.
         """
-        print(f"\n>>> Safe Moving -> {src_path} to {dst_path}")
+        print(f'\n>>> Safe Moving -> {src_path} to {dst_path}')
         if dst_path.exists():
-            print(f"ERROR: Destination {dst_path} already exists. Aborting build.")
+            print(f'ERROR: Destination {dst_path} already exists. Aborting build.')
             sys.exit(1)
-        
+
         dst_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(src_path, dst_path)
 
@@ -160,13 +163,13 @@ class DirectoryManager:
             path (Path | str): The path to check.
         """
         target = Path(path)
-        print(f"\n>>> Checking existence -> {target}")
+        print(f'\n>>> Checking existence -> {target}')
         if not target.exists():
-            print(f"ERROR: Required file or directory not found: {target}")
-            print("Please ensure all dependencies and configuration files are ready.")
+            print(f'ERROR: Required file or directory not found: {target}')
+            print('Please ensure all dependencies and configuration files are ready.')
             sys.exit(1)
         else:
-            print(f"Verified: {target} exists.")
+            print(f'Verified: {target} exists.')
 
     def retain_only_extensions(self, directory, extension):
         """
@@ -181,10 +184,10 @@ class DirectoryManager:
             # Deletes all files in 'dist' that do not end with .js
         """
         target = Path(directory)
-        print(f"\n>>> Retaining only {extension} files in {target}")
+        print(f'\n>>> Retaining only {extension} files in {target}')
 
         if not target.exists() or not target.is_dir():
-            print(f"Skipped (not found or not a dir): {target}")
+            print(f'Skipped (not found or not a dir): {target}')
             return
 
         removed_count = 0
@@ -195,9 +198,9 @@ class DirectoryManager:
                         item.unlink()
                         removed_count += 1
                     except Exception as e:
-                        print(f"Failed to delete {item}: {e}")
+                        print(f'Failed to delete {item}: {e}')
 
-        print(f"Removed {removed_count} files.")
+        print(f'Removed {removed_count} files.')
 
     def delete(self, path):
         """
@@ -210,18 +213,18 @@ class DirectoryManager:
             builder.delete(Path("dist/temp.txt"))
         """
         target = Path(path)
-        print(f"\n>>> Smart Deleting -> {target}")
+        print(f'\n>>> Smart Deleting -> {target}')
 
         if not target.exists():
-            print(f"Skipped (not found): {target}")
+            print(f'Skipped (not found): {target}')
             return
 
         try:
             if target.is_dir():
                 shutil.rmtree(target)
-                print(f"Removed directory: {target}")
+                print(f'Removed directory: {target}')
             elif target.is_file():
                 target.unlink()
-                print(f"Removed file: {target}")
+                print(f'Removed file: {target}')
         except Exception as e:
-            print(f"Failed to delete {target}: {e}")
+            print(f'Failed to delete {target}: {e}')

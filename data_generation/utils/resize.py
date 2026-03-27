@@ -9,25 +9,25 @@ def resize_data(directory):
     dir_path = Path(directory)
 
     if not dir_path.is_dir():
-        print(f"Error: {directory} is not a valid directory")
+        print(f'Error: {directory} is not a valid directory')
         return
 
-    print(f"Starting to resize images in {dir_path}...")
+    print(f'Starting to resize images in {dir_path}...')
 
     # recursively find all .jpg files
     # rglob is case-sensitive on Linux, so we might miss .JPG if we only look for .jpg
     # to be safe, we can iterate all files and check suffix
 
     count = 0
-    for file_path in dir_path.rglob("*"):
-        if file_path.suffix.lower() == ".jpg":
+    for file_path in dir_path.rglob('*'):
+        if file_path.suffix.lower() == '.jpg':
             try:
                 # cv2.imread needs string path
                 str_path = str(file_path)
                 img = cv2.imread(str_path)
 
                 if img is None:
-                    print(f"Warning: Could not read image {str_path}")
+                    print(f'Warning: Could not read image {str_path}')
                     continue
 
                 # Resize to 300x150, ignoring aspect ratio (stretch)
@@ -41,6 +41,6 @@ def resize_data(directory):
                 cv2.imwrite(str_path, resized_img)
                 count += 1
             except Exception as e:
-                print(f"Error processing {file_path}: {e}")
+                print(f'Error processing {file_path}: {e}')
 
-    print(f"Finished resizing {count} images.")
+    print(f'Finished resizing {count} images.')

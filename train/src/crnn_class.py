@@ -1,10 +1,10 @@
 import torch.nn as nn
 import torch.nn.functional as F
 
-CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 CHAR2IDX = {char: idx + 1 for idx, char in enumerate(CHARS)}
 IDX2CHAR = {idx + 1: char for idx, char in enumerate(CHARS)}
-IDX2CHAR[0] = "-"
+IDX2CHAR[0] = '-'
 NUM_CLASSES = len(CHARS) + 1  # +1 for CTC blank token
 
 

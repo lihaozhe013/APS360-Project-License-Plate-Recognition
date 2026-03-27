@@ -9,7 +9,7 @@ def extract_plate_text_ocr(cropped_image_path):
     # 1. Load the pre-cropped image
     cropped_plate = cv2.imread(cropped_image_path)
     if cropped_plate is None:
-        print(f"Error: Could not load image at {cropped_image_path}.")
+        print(f'Error: Could not load image at {cropped_image_path}.')
         return None
 
     # 2. Convert to grayscale
@@ -24,7 +24,7 @@ def extract_plate_text_ocr(cropped_image_path):
     # --oem 3: Use the default OCR Engine Mode.
     # --psm 8: Page Segmentation Mode 8 treats the image as a single word.
     # -c tessedit_char_whitelist: Limits the output to standard plate characters.
-    custom_config = r"--oem 3 --psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    custom_config = r'--oem 3 --psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     text = pytesseract.image_to_string(gray_plate, config=custom_config)
 
     # 4. Return the cleaned string

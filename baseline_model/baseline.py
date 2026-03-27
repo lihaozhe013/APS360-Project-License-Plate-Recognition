@@ -7,11 +7,11 @@ import numpy as np
 
 def recognize_license_plate(image_path):
     # 1. Load the image
-    print(f"DEBUG: Processing {image_path}")
+    print(f'DEBUG: Processing {image_path}')
     image_path = str(image_path)
     img = cv2.imread(image_path)
     if img is None:
-        print("Error: Could not load image.")
+        print('Error: Could not load image.')
         return None
 
     # 2. Convert to grayscale and blur to reduce noise
@@ -33,7 +33,7 @@ def recognize_license_plate(image_path):
     contours = imutils.grab_contours(keypoints)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:30]
 
-    print(f"DEBUG: Found {len(contours)} top contours (processing max 30).")
+    print(f'DEBUG: Found {len(contours)} top contours (processing max 30).')
 
     location = None
     plate_rect = None
@@ -51,7 +51,7 @@ def recognize_license_plate(image_path):
         extent = area / float(rect_area)
 
         print(
-            f"DEBUG: Contour {i} - area: {area:.1f}, aspect: {aspect_ratio:.2f}, extent: {extent:.2f}"
+            f'DEBUG: Contour {i} - area: {area:.1f}, aspect: {aspect_ratio:.2f}, extent: {extent:.2f}'
         )
 
         # Check for license plate generic properties
@@ -61,13 +61,13 @@ def recognize_license_plate(image_path):
         if 1.2 <= aspect_ratio <= 5.0 and extent > 0.45:
             location = contour
             plate_rect = (x, y, w, h)
-            print(f"DEBUG: Contour {i} accepted as potential plate.")
+            print(f'DEBUG: Contour {i} accepted as potential plate.')
             break
 
     if location is None:
-        print("Could not detect a license plate contour.")
+        print('Could not detect a license plate contour.')
         # Debug: Save the edged image to see what's happening
-        debug_output_path = f"debug_edged_{Path(image_path).name}"
+        debug_output_path = f'debug_edged_{Path(image_path).name}'
         cv2.imwrite(debug_output_path, edged)
         return None
 
@@ -98,19 +98,19 @@ def recognize_license_plate(image_path):
     )[1]
 
     # Save debug crop
-    debug_crop_path = f"debug_crop_{Path(image_path).name}"
+    debug_crop_path = f'debug_crop_{Path(image_path).name}'
     cv2.imwrite(debug_crop_path, cropped_plate)
-    print(f"DEBUG: Saved cropped plate to {debug_crop_path}")
+    print(f'DEBUG: Saved cropped plate to {debug_crop_path}')
 
     # 7. Use Tesseract OCR to recognize characters
     # Try different PSM modes and Inversion
     configs = [
-        r"--oem 3 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-        r"--oem 3 --psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-        r"--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        r'--oem 3 --psm 7 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+        r'--oem 3 --psm 8 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+        r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
     ]
 
-    best_text = ""
+    best_text = ''
     # Try with normal cropped image and inverted image (for dark text on light background vs light on dark)
     for img_variant in [cropped_plate, cv2.bitwise_not(cropped_plate)]:
         for config in configs:

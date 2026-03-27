@@ -5,8 +5,8 @@ from pathlib import Path
 script_path = Path(__file__).resolve()
 root_dir = script_path.parent
 
-INPUT_DIR = root_dir / "clean_plates"
-OUTPUT_DIR = root_dir / "aged_plates"
+INPUT_DIR = root_dir / 'clean_plates'
+OUTPUT_DIR = root_dir / 'aged_plates'
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -42,13 +42,13 @@ aging_pipeline = A.Compose(
 def process_plates():
     input_path = Path(INPUT_DIR)
     # Get all .jpg files in the directory
-    image_files = list(input_path.glob("*.jpg"))
+    image_files = list(input_path.glob('*.jpg'))
 
     if not image_files:
-        print(f"No .jpg files found in {INPUT_DIR}.")
+        print(f'No .jpg files found in {INPUT_DIR}.')
         return
 
-    print(f"Found {len(image_files)} plates. Starting physical aging process...")
+    print(f'Found {len(image_files)} plates. Starting physical aging process...')
 
     success_count = 0
 
@@ -57,7 +57,7 @@ def process_plates():
         # Note: OpenCV reads images in BGR format by default
         image = cv2.imread(str(img_path))
         if image is None:
-            print(f"Warning: Could not read image {img_path.name}")
+            print(f'Warning: Could not read image {img_path.name}')
             continue
 
         # 2. Color space conversion
@@ -66,7 +66,7 @@ def process_plates():
 
         # 3. Apply the Albumentations pipeline
         augmented = aging_pipeline(image=image_rgb)
-        image_aged_rgb = augmented["image"]
+        image_aged_rgb = augmented['image']
 
         # 4. Convert back to BGR format for OpenCV to save correctly
         image_aged_bgr = cv2.cvtColor(image_aged_rgb, cv2.COLOR_RGB2BGR)
@@ -79,12 +79,12 @@ def process_plates():
 
         # Simple progress printer
         if success_count % 1000 == 0:
-            print(f"Processed {success_count} / {len(image_files)} plates...")
+            print(f'Processed {success_count} / {len(image_files)} plates...')
 
     print(
         f"Done! Successfully aged {success_count} plates. Saved to the '{OUTPUT_DIR}' directory."
     )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     process_plates()

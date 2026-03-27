@@ -10,31 +10,55 @@ OUTPUT_DIR = root_dir / 'aged_plates'
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# ==========================================
-# Define Domain Randomization Pipeline (Local Aging)
-# ==========================================
-# Note: The parameters here are relatively conservative,
-# as global processing (blur/compression) will be applied later.
 aging_pipeline = A.Compose(
     [
-        # 1. Simulate material aging: yellowing, fading, uneven exposure
-        # Use ColorJitter to slightly perturb brightness, contrast, and saturation
-        # A.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.2, hue=0.05, p=0.8),
-        A.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.5, hue=0.1, p=0.8),
-        # Use RGBShift to simulate a slight color cast (e.g., white background turning yellowish)
-        A.RGBShift(r_shift_limit=15, g_shift_limit=15, b_shift_limit=10, p=0.5),
-        # 2. Simulate physical stains: mud spots, splashes, chipped paint
-        # CoarseDropout randomly generates small dark squares (simulating mud or large stains)
-        # A.CoarseDropout(
-        #     max_holes=2,             # Maximum number of stains
-        #     max_height=4,           # Maximum height of a stain (pixels)
-        #     max_width=4,            # Maximum width of a stain (pixels)
-        #     min_holes=1,             # Minimum number of stains
-        #     fill_value=(50, 60, 50), # Fill color: Dark grayish-brown (RGB format)
-        #     p=0.4                    # 40% probability of applying these large stains
-        # ),
-        # PixelDropout randomly blacks out individual pixels, simulating fine dust or micro-scratches
+        A.Perspective(scale=(0.02, 0.07), keep_size=True, p=0.5),
+        A.OneOf(
+            [
+                A.MotionBlur(blur_limit=(3, 9), p=1.0),
+                A.GaussianBlur(blur_limit=(3, 7), p=1.0),
+                A.Defocus(radius=(3, 5), alias_blur=(0.1, 0.5), p=1.0),
+            ],
+            p=0.4,
+        ),
+        A.OneOf(
+            [
+                A.ISONoise(color_shift=(0.01, 0.05), intensity=(0.1, 0.5), p=1.0),
+                A.GaussNoise(var_limit=(10.0, 50.0), p=1.0),
+                A.MultiplicativeNoise(multiplier=(0.9, 1.1), elementwise=True, p=1.0),
+            ],
+            p=0.5,
+        ),
+        A.ImageCompression(quality_lower=30, quality_upper=80, p=0.6),
+        A.OneOf(
+            [
+                A.RandomBrightnessContrast(
+                    brightness_limit=0.15, contrast_limit=0.15, p=1.0
+                ),
+                A.RandomShadow(
+                    num_shadows_lower=1,
+                    num_shadows_upper=1,
+                    shadow_dimension=4,
+                    shadow_roi=(0, 0, 1, 1),
+                    p=1.0,
+                ),
+                A.RandomSunFlare(
+                    flare_roi=(0.2, 0.2, 0.8, 0.8),
+                    angle_lower=0,
+                    angle_upper=1,
+                    num_flare_circles_lower=1,
+                    num_flare_circles_upper=1,
+                    src_radius=30,
+                    src_color=(255, 255, 255),
+                    p=0.3,
+                ),
+            ],
+            p=0.5,
+        ),
         A.PixelDropout(dropout_prob=0.005, p=0.5),
+        A.HueSaturationValue(
+            hue_shift_limit=4, sat_shift_limit=15, val_shift_limit=10, p=0.2
+        ),
     ]
 )
 

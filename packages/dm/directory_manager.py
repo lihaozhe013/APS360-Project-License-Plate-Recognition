@@ -33,16 +33,20 @@ class DirectoryManager:
 
         Args:
             work_dir (Path | str): The directory where the command should be executed.
-            command (str): The shell command to run.
+            command (str | list[str]): The command to run. Can be a shell string or a list of arguments.
 
         Example:
             builder.run(Path("/project"), "npm install")
+            builder.run(Path("/project"), ["npm", "install"])
         """
         print(f"\n>>> Running Command -> '{command}' in {work_dir}")
         cwd_path = work_dir
 
+        # Check if command is a string to decide whether to use shell
+        use_shell = isinstance(command, str)
+
         # subprocess.run will raise an exception if the return code is non-zero
-        subprocess.run(command, shell=True, cwd=cwd_path, check=True)
+        subprocess.run(command, shell=use_shell, cwd=cwd_path, check=True)
 
     def copy(self, src_path, dst_path):
         """

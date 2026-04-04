@@ -12,6 +12,7 @@ data/
 dataset/
 # Ignore the entire outputs directory content
 outputs/
+config.yaml
 
 # Alternatively, ignore specific large file extensions wherever they are
 *.csv

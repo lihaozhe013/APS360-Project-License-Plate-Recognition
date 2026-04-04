@@ -1,0 +1,3 @@
+data_generation:
+  num_of_plates: 100000
+  num_of_val: 200

@@ -9,9 +9,10 @@ from aps360_lpr.data_generation.pipeline import (
     scripts_base_dir,
     clean_plate_out,
     clean_plate_generator_dir,
+    config
 )
 
-num_of_plates = 10
+num_of_plates = config.num_of_plates
 out_path = clean_plate_out
 
 template_html_path = clean_plate_generator_dir / 'src' / 'template.html'

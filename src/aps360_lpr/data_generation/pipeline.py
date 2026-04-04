@@ -2,22 +2,24 @@ from pathlib import Path
 from aps360_lpr.data_generation.utils.split_and_copy import split_and_move
 from dm.directory_manager import DirectoryManager
 from aps360_lpr.data_generation.utils.resize import resize_data
+from aps360_lpr.data_generation.utils.config import Configs
 import shutil
+
 
 scripts_base_dir = Path(__file__).parent.resolve()
 base_dir = scripts_base_dir / '..' / '..' / '..'
 dataset_base_dir = base_dir / 'dataset'
+config = Configs(scripts_base_dir)
 
 clean_plate_generator_dir = scripts_base_dir / 'clean_plate_generator'
 domain_randomizer_dir = scripts_base_dir / 'domain_randomizer'
 
-clean_plate_out = dataset_base_dir / 'temp' / 'clean_plate_out'
+clean_plate_out = dataset_base_dir / 'clean_plate_out'
 domain_random_output_dir = dataset_base_dir / 'temp' / 'domain_randomizer_out_'
 train_set_dir = dataset_base_dir / 'train'
 val_set_dir = dataset_base_dir / 'val'
 
 clean_list = [dataset_base_dir]
-
 
 def main():
     dm = DirectoryManager()
@@ -35,7 +37,7 @@ def main():
     dm.run(domain_randomizer_dir, ['uv', 'run', 'process_plates.py'])
 
     # Split and distribute to train/val folders
-    split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=2)
+    split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=config.num_of_val)
 
     # copy real val data into val folder
     # shutil.copytree(base_dir / 'real_val_data', val_set_dir, dirs_exist_ok=True)
@@ -43,6 +45,7 @@ def main():
     resize_data(train_set_dir)
     resize_data(val_set_dir)
 
+    dm.delete(domain_random_output_dir)
     print(f'Script Finished Successfully!')
 
 

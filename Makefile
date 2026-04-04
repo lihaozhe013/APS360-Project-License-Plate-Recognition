@@ -35,10 +35,13 @@ run:
 		--allow-root
 
 data:
-	cd data_generation && uv run pipeline.py
+	cd src/aps360_lpr/data_generation && uv run pipeline.py
 
 train-crnn:
-	cd train/src && uv run train.py
+	cd src/aps360_lpr/train/src && uv run train.py
 
 test:
-	cd train/src && uv run inference.py
+	cd src/aps360_lpr/train/src && uv run inference.py
+
+format:
+	uv run ruff format .

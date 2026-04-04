@@ -1,5 +1,5 @@
 [project]
-name = "aps360-project-license-plate-recognition"
+name = "aps360_lpr"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -40,5 +40,6 @@ dev = [
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "packages/dm"
+    "packages/dm",
+    "src/aps360_lpr"
 ]

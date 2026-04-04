@@ -9,6 +9,7 @@ __pycache__/
 # --- Data & Outputs (CRITICAL) ---
 # Ignore the entire data directory content
 data/
+dataset/
 # Ignore the entire outputs directory content
 outputs/
 

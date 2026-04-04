@@ -74,7 +74,7 @@ wheels = [
 ]
 
 [[package]]
-name = "aps360-project-license-plate-recognition"
+name = "aps360-lpr"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

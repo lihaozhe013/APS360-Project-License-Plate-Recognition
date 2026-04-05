@@ -25,13 +25,20 @@ def predict_bounding_box(image_path, model_path="weights/bbox_model.pth"):
     image = cv2.imread(image_path)
     if image is None:
         print(f"Error: Could not load image from {image_path}")
-        return None
+        return None, None
         
     orig_h, orig_w, _ = image.shape
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    # Convert the image to low resolution first (e.g., width 800px, preserve aspect ratio)
+    scale_ratio = 800.0 / orig_w
+    low_res_w = int(orig_w * scale_ratio)
+    low_res_h = int(orig_h * scale_ratio)
+    low_res_img = cv2.resize(image, (low_res_w, low_res_h), interpolation=cv2.INTER_AREA)
+    
+    image_rgb = cv2.cvtColor(low_res_img, cv2.COLOR_BGR2RGB)
     
     # Needs to match the training resize and normalization
-    resized_img = cv2.resize(image_rgb, (224, 224))
+    resized_img = cv2.resize(image_rgb, (224, 224), interpolation=cv2.INTER_AREA)
     
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -44,18 +51,35 @@ def predict_bounding_box(image_path, model_path="weights/bbox_model.pth"):
     with torch.no_grad():
         output = model(input_tensor).squeeze(0).cpu().numpy()
         
-    # Denormalize coordinates (the model outputs [0, 1] range)
+    # Denormalize coordinates to match our newly created low resolution image
+    # Note: Expand the bounding box outward slightly (by a percentage margin)
+    # The padding prevents edges of characters from being chopped off
+    PADDING_PERCENT = 0.05
+    
     points = []
     for i in range(0, 8, 2):
-        x = output[i] * orig_w
-        y = output[i+1] * orig_h
+        # Base predicted coordinate
+        px = output[i]
+        py = output[i+1]
+        
+        # Calculate center
+        center_x = (output[0] + output[2] + output[4] + output[6]) / 4.0
+        center_y = (output[1] + output[3] + output[5] + output[7]) / 4.0
+        
+        # Expand away from center
+        dx = px - center_x
+        dy = py - center_y
+        
+        px_padded = px + (dx * PADDING_PERCENT)
+        py_padded = py + (dy * PADDING_PERCENT)
+        
+        x = px_padded * low_res_w
+        y = py_padded * low_res_h
         points.append((int(x), int(y)))
         
-    return points
+    return points, low_res_img
 
-def draw_bounding_box(image_path, points, output_path="output_bbox.jpg"):
-    image = cv2.imread(image_path)
-    
+def draw_bounding_box(image, points, output_path="output_bbox.jpg"):
     # Draw points
     for i, pt in enumerate(points):
         cv2.circle(image, pt, 5, (0, 0, 255), -1)
@@ -76,12 +100,12 @@ if __name__ == "__main__":
     parser.add_argument("--visualize", action="store_true", help="Draw bounding box and save to output.jpg")
     args = parser.parse_args()
     
-    points = predict_bounding_box(args.image_path, args.model)
+    points, low_res_img = predict_bounding_box(args.image_path, args.model)
     
     if points:
-        print("Predicted Coordinates:")
+        print("Predicted Coordinates (Scale adjusted to Low Res Image):")
         for i, pt in enumerate(points):
             print(f"Point {i+1}: {pt}")
             
-        if args.visualize:
-            draw_bounding_box(args.image_path, points)
+        if args.visualize and low_res_img is not None:
+            draw_bounding_box(low_res_img, points)

@@ -36,3 +36,4 @@ docker-compose.override.yml
 # --- IDE Settings (Optional but recommended) ---
 .vscode/
 .idea/
+src/aps360_lpr/train/src/bbox_model/output_bbox.jpg

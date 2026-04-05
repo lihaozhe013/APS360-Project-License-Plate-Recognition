@@ -140,7 +140,9 @@ def main():
         # Format string: x1_y1_x2_y2_x3_y3_x4_y4
         coord_str = f"{c1[0]:.1f}_{c1[1]:.1f}_{c2[0]:.1f}_{c2[1]:.1f}_{c3[0]:.1f}_{c3[1]:.1f}_{c4[0]:.1f}_{c4[1]:.1f}"
         
-        out_filename = f"embedded_{coord_str}_{i}.jpg"
+        # Include original plate name in filename
+        original_name = plate_path.stem
+        out_filename = f"embedded_{coord_str}_{original_name}_{i}.jpg"
         out_path = output_dir / out_filename
         cv2.imwrite(str(out_path), result_img)
         success_count += 1

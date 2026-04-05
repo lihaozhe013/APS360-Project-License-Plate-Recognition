@@ -77,7 +77,7 @@ def train_model(data_dir, epochs=10, batch_size=16, lr=0.001):
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
     
     model = BoundingBoxCNN(pretrained=True).to(device)
-    criterion = nn.MSELoss() # Mean Squared Error for coordinates
+    criterion = nn.L1Loss() # L1Loss (Mean Absolute Error) is better for pixel coordinates vs MSE
     optimizer = optim.Adam(model.parameters(), lr=lr)
     
     print(f"Starting training for {epochs} epochs on {len(dataset)} samples...")
@@ -98,7 +98,7 @@ def train_model(data_dir, epochs=10, batch_size=16, lr=0.001):
             running_loss += loss.item() * images.size(0)
             
         epoch_loss = running_loss / len(dataset)
-        print(f"Epoch {epoch+1} Loss: {epoch_loss:.4f}")
+        print(f"Epoch {epoch+1} Loss (L1): {epoch_loss:.6f}")
         
     # Save the trained model
     os.makedirs("weights", exist_ok=True)
@@ -107,5 +107,5 @@ def train_model(data_dir, epochs=10, batch_size=16, lr=0.001):
 
 if __name__ == "__main__":
     # Adjust this path based on where your script is run from
-    DATA_DIR = "../../../../../../dataset/background_embedder_out_"
+    DATA_DIR = "../../../../../dataset/background_embedder_out_"
     train_model(DATA_DIR, epochs=10, batch_size=16)

@@ -14,7 +14,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 aging_pipeline = A.Compose(
     [
-        A.Perspective(scale=(0.02, 0.07), keep_size=True, p=0.5),
+        A.Perspective(scale=(0.003, 0.010), keep_size=True, p=0.5),
         A.OneOf(
             [
                 A.MotionBlur(blur_limit=(3, 9), p=1.0),
@@ -23,40 +23,40 @@ aging_pipeline = A.Compose(
             ],
             p=0.4,
         ),
-        A.OneOf(
-            [
-                A.ISONoise(color_shift=(0.01, 0.05), intensity=(0.1, 0.5), p=1.0),
-                A.GaussNoise(var_limit=(10.0, 50.0), p=1.0),
-                A.MultiplicativeNoise(multiplier=(0.9, 1.1), elementwise=True, p=1.0),
-            ],
-            p=0.5,
-        ),
+        # A.OneOf(
+        #     [
+        #         A.ISONoise(color_shift=(0.01, 0.05), intensity=(0.1, 0.5), p=1.0),
+        #         A.GaussNoise(var_limit=(10.0, 50.0), p=1.0),
+        #         A.MultiplicativeNoise(multiplier=(0.9, 1.1), elementwise=True, p=1.0),
+        #     ],
+        #     p=0.5,
+        # ),
         A.ImageCompression(quality_lower=30, quality_upper=80, p=0.6),
-        A.OneOf(
-            [
-                A.RandomBrightnessContrast(
-                    brightness_limit=0.15, contrast_limit=0.15, p=1.0
-                ),
-                A.RandomShadow(
-                    num_shadows_lower=1,
-                    num_shadows_upper=1,
-                    shadow_dimension=4,
-                    shadow_roi=(0, 0, 1, 1),
-                    p=1.0,
-                ),
-                A.RandomSunFlare(
-                    flare_roi=(0.2, 0.2, 0.8, 0.8),
-                    angle_lower=0,
-                    angle_upper=1,
-                    num_flare_circles_lower=1,
-                    num_flare_circles_upper=1,
-                    src_radius=30,
-                    src_color=(255, 255, 255),
-                    p=0.3,
-                ),
-            ],
-            p=0.5,
-        ),
+        # A.OneOf(
+        #     [
+        #         A.RandomBrightnessContrast(
+        #             brightness_limit=0.15, contrast_limit=0.15, p=1.0
+        #         ),
+        #         A.RandomShadow(
+        #             num_shadows_lower=1,
+        #             num_shadows_upper=1,
+        #             shadow_dimension=4,
+        #             shadow_roi=(0, 0, 1, 1),
+        #             p=1.0,
+        #         ),
+        #         A.RandomSunFlare(
+        #             flare_roi=(0.2, 0.2, 0.8, 0.8),
+        #             angle_lower=0,
+        #             angle_upper=1,
+        #             num_flare_circles_lower=1,
+        #             num_flare_circles_upper=1,
+        #             src_radius=30,
+        #             src_color=(255, 255, 255),
+        #             p=0.3,
+        #         ),
+        #     ],
+        #     p=0.5,
+        # ),
         A.PixelDropout(dropout_prob=0.005, p=0.5),
         A.HueSaturationValue(
             hue_shift_limit=4, sat_shift_limit=15, val_shift_limit=10, p=0.2

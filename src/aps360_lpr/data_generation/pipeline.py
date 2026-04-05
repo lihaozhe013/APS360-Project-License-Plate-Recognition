@@ -12,9 +12,11 @@ dataset_base_dir = base_dir / 'dataset'
 config = Configs(scripts_base_dir)
 
 clean_plate_generator_dir = scripts_base_dir / 'clean_plate_generator'
+background_embedder_dir = scripts_base_dir / 'background_embedder'
 domain_randomizer_dir = scripts_base_dir / 'domain_randomizer'
 
 clean_plate_out = dataset_base_dir / 'clean_plate_out'
+background_embedder_output_dir = dataset_base_dir / 'temp' / 'background_embedder_out_'
 domain_random_output_dir = dataset_base_dir / 'temp' / 'domain_randomizer_out_'
 train_set_dir = dataset_base_dir / 'train'
 val_set_dir = dataset_base_dir / 'val'
@@ -35,6 +37,9 @@ def main():
 
     # domain_randomize
     dm.run(domain_randomizer_dir, ['uv', 'run', 'process_plates.py'])
+
+    # background_embedder
+    dm.run(background_embedder_dir, ['uv', 'run', 'background_embedder.py'])
 
     # Split and distribute to train/val folders
     split_and_move(domain_random_output_dir, train_set_dir, val_set_dir, val_count=config.num_of_val)

@@ -8,10 +8,10 @@ from aps360_lpr.train.src.recognition_model.crnn_class import CHAR2IDX
 
 
 class LicensePlateDataset(Dataset):
-    def __init__(self, img_dir, img_width=300, img_height=150):
-        self.img_paths = glob.glob(os.path.join(img_dir, '*.jpg'))
+    def __init__(self, img_dir, img_width=128, img_height=32):
+        self.img_paths = glob.glob(os.path.join(img_dir, '*.jpg')) + glob.glob(os.path.join(img_dir, '*.png'))
 
-        # Resize to fixed height of 150 and width of 300, convert to tensor, normalize
+        # Resize to fixed height of 32 and width of 128, convert to tensor, normalize
         self.transform = transforms.Compose(
             [
                 transforms.Resize((img_height, img_width)),

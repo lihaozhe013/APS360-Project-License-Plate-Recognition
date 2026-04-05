@@ -65,7 +65,12 @@ def preprocess_and_crop_dataset(input_dir, output_dir, bbox_weights):
     Reads the embedded full images, runs BBox model to get coordinates, 
     crops the license plate to 128x32, and saves them ready for CRNN.
     """
-    os.makedirs(output_dir, exist_ok=True)
+    import random
+    
+    train_dir = os.path.join(output_dir, 'train')
+    val_dir = os.path.join(output_dir, 'val')
+    os.makedirs(train_dir, exist_ok=True)
+    os.makedirs(val_dir, exist_ok=True)
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device for BBox cropping: {device}")
@@ -77,9 +82,12 @@ def preprocess_and_crop_dataset(input_dir, output_dir, bbox_weights):
     
     image_paths = glob.glob(os.path.join(input_dir, "*.jpg")) + glob.glob(os.path.join(input_dir, "*.png"))
     
+    # Shuffle for train/val split
+    random.shuffle(image_paths)
+    
     print(f"Found {len(image_paths)} full images. Cropping plates...")
     
-    for img_path in tqdm(image_paths):
+    for i, img_path in enumerate(tqdm(image_paths)):
         # Format: embedded_x1_y1_..._x4_y4_PLATESTRING_idx.jpg
         # Extract the plate string from filename
         filename = os.path.basename(img_path)
@@ -89,7 +97,7 @@ def preprocess_and_crop_dataset(input_dir, output_dir, bbox_weights):
             # We skip "embedded" (0) and 8 coordinates (1-8), taking the string at index 9
             plate_string = parts[9]
         except IndexError:
-            print(f"Skipping malformed filename: {filename}")
+            # Maybe the format failed
             continue
             
         img_bgr = cv2.imread(img_path)
@@ -108,7 +116,12 @@ def preprocess_and_crop_dataset(input_dir, output_dir, bbox_weights):
         
         # Save it for CRNN layout under the strict naming convention: PLATESTRING_idx.jpg
         out_filename = f"{plate_string}_{parts[-1]}"
-        cv2.imwrite(os.path.join(output_dir, out_filename), warped_plate)
+        
+        # Split 95% train, 5% val
+        if i < int(len(image_paths) * 0.95):
+            cv2.imwrite(os.path.join(train_dir, out_filename), warped_plate)
+        else:
+            cv2.imwrite(os.path.join(val_dir, out_filename), warped_plate)
 
 
 def main():

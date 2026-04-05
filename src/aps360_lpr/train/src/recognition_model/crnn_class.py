@@ -54,6 +54,8 @@ class CRNN(nn.Module):
         # 2. Map to sequence:
         # conv_out shape is (Batch, Channels, Height, Width) -> (B, 512, 1, 31)
         # Squeeze the height dimension (which is 1)
+        b, c, h, w = conv_out.size()
+        assert h == 1, "the height of conv must be 1"
         conv_out = conv_out.squeeze(2)  # (B, 512, 31)
 
         # Transpose to (Batch, SequenceLength, Channels) for RNN

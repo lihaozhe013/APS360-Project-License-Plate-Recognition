@@ -29,12 +29,16 @@ def collate_fn(batch):
     return images, targets, target_lengths
 
 
-def train():
+def train(data_dir=None):
     base_dir = Path(__file__).parent.resolve() / '..'
 
     # --- Configurations ---
-    train_dir = base_dir / 'data' / 'train'
-    val_dir = base_dir / 'data' / 'val'
+    if data_dir is not None:
+        train_dir = Path(data_dir) / 'train'
+        val_dir = Path(data_dir) / 'val'
+    else:
+        train_dir = base_dir / 'data' / 'train'
+        val_dir = base_dir / 'data' / 'val'
     batch_size = 32
     epochs = 50
     learning_rate = 0.001
@@ -196,4 +200,8 @@ def train():
 
 
 if __name__ == '__main__':
-    train()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data_dir", type=str, default=None)
+    args = parser.parse_args()
+    train(args.data_dir)

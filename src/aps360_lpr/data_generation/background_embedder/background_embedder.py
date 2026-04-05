@@ -130,8 +130,17 @@ def main():
         # Embed the plate into the background
         result_img = embed_plate(plate_img, bg_img, coords)
         
-        # Save output image
-        out_filename = f"embedded_{plate_path.name}"
+        # Save output image with coordinates in the filename
+        # Coordinates: 1=TL, 2=TR, 3=BL, 4=BR
+        c1 = coords["1"]
+        c2 = coords["2"]
+        c3 = coords["3"]
+        c4 = coords["4"]
+        
+        # Format string: x1_y1_x2_y2_x3_y3_x4_y4
+        coord_str = f"{c1[0]:.1f}_{c1[1]:.1f}_{c2[0]:.1f}_{c2[1]:.1f}_{c3[0]:.1f}_{c3[1]:.1f}_{c4[0]:.1f}_{c4[1]:.1f}"
+        
+        out_filename = f"embedded_{coord_str}_{i}.jpg"
         out_path = output_dir / out_filename
         cv2.imwrite(str(out_path), result_img)
         success_count += 1

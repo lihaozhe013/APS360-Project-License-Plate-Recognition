@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image
-from aps360_lpr.train.src.crnn_class import CHAR2IDX
+from aps360_lpr.train.src.recognition_model.crnn_class import CHAR2IDX
 
 
 class LicensePlateDataset(Dataset):

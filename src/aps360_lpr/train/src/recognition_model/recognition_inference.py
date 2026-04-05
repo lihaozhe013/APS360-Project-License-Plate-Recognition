@@ -6,8 +6,8 @@ from torchvision import transforms
 from PIL import Image
 import matplotlib.pyplot as plt
 from pathlib import Path
-from aps360_lpr.train.src.dataset_class import LicensePlateDataset
-from aps360_lpr.train.src.crnn_class import CRNN, IDX2CHAR
+from aps360_lpr.train.src.recognition_model.recognition_dataset_class import LicensePlateDataset
+from aps360_lpr.train.src.recognition_model.crnn_class import CRNN, IDX2CHAR
 
 # ==========================================
 # 1. CTC Greedy Decoder

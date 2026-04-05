@@ -4,8 +4,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from pathlib import Path
 import matplotlib.pyplot as plt
-from aps360_lpr.train.src.dataset_class import LicensePlateDataset
-from aps360_lpr.train.src.crnn_class import CRNN
+from aps360_lpr.train.src.recognition_model.recognition_dataset_class import LicensePlateDataset
+from aps360_lpr.train.src.recognition_model.crnn_class import CRNN
 
 # ==========================================
 # 1. Dataset & Collate Function

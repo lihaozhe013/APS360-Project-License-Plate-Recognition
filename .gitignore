@@ -37,3 +37,5 @@ docker-compose.override.yml
 .vscode/
 .idea/
 src/aps360_lpr/train/src/bbox_model/output_bbox.jpg
+prediction_result_crop.jpg
+prediction_result.jpg
